@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -17,11 +18,24 @@ import { useToast } from "./ui/use-toast";
 export function CreateThreadButton() {
   const [title, setTitle] = useState("");
   const [open, setOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!title.trim()) {
+      toast({
+        title: "Missing title",
+        description: "Please enter a thread title before creating it.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
     try {
       const res = await fetch("/api/threads", {
         method: "POST",
@@ -34,6 +48,7 @@ export function CreateThreadButton() {
       const thread = await res.json();
       router.push(`/threads/${thread.id}`);
       setOpen(false);
+      setTitle("");
       toast({
         title: "Success",
         description: "Thread created successfully",
@@ -44,6 +59,8 @@ export function CreateThreadButton() {
         description: "Failed to create thread",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -55,6 +72,9 @@ export function CreateThreadButton() {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create New Thread</DialogTitle>
+          <DialogDescription>
+            Start a new thread to group related snippets and notes.
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -63,10 +83,13 @@ export function CreateThreadButton() {
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              placeholder="Release notes, debugging scratchpad, API snippets..."
               required
             />
           </div>
-          <Button type="submit">Create</Button>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Creating..." : "Create"}
+          </Button>
         </form>
       </DialogContent>
     </Dialog>

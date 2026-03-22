@@ -1,23 +1,32 @@
 import { db } from "@/lib/db";
-import { threads } from "@/lib/schema";
-import { eq } from "drizzle-orm";
+import { errorResponse } from "@/lib/http";
+import { threads, pastes } from "@/lib/schema";
+import { eq, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
-  req: NextRequest,
+  _req: NextRequest,
   props: { params: Promise<{ id: string }> }
-) {
+): Promise<NextResponse> {
   const params = await props.params;
 
-  const result = await db
-    .select()
+  const [result] = await db
+    .select({
+      id: threads.id,
+      title: threads.title,
+      createdAt: threads.createdAt,
+      updatedAt: threads.updatedAt,
+      pasteCount: sql<number>`cast(count(${pastes.id}) as int)`,
+    })
     .from(threads)
+    .leftJoin(pastes, eq(pastes.threadId, threads.id))
     .where(eq(threads.id, params.id))
+    .groupBy(threads.id)
     .limit(1);
 
-  if (!result.length) {
-    return NextResponse.json({ error: "Thread not found" }, { status: 404 });
+  if (!result) {
+    return errorResponse("Thread not found", 404);
   }
 
-  return NextResponse.json(result[0], {});
+  return NextResponse.json(result);
 }

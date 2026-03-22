@@ -1,10 +1,7 @@
-import { Inter } from "next/font/google";
 import { SiteHeader } from "@/components/site-header";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 import { SiteFooter } from "./components/site-footer";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Paste Board",
@@ -18,13 +15,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} dark:bg-zinc-900`}>
+      <body>
         <Providers>
-          <div className="relative flex min-h-screen flex-col bg-gradient-to-b from-transparent dark:to-zinc-950/50">
+          <div className="relative flex min-h-screen flex-col">
             <SiteHeader />
-            <main className="flex-1">
-              <div className="container mx-auto px-4">{children}</div>
-            </main>
+            <main className="flex-1">{children}</main>
             <SiteFooter />
           </div>
         </Providers>

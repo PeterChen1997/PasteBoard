@@ -1,6 +1,6 @@
 export function PasteContent({ content }: { content: string }) {
   return (
-    <pre className="font-mono text-sm bg-muted/50 rounded-md p-4 overflow-x-auto">
+    <pre className="overflow-x-auto rounded-xl border border-border/70 bg-muted/50 p-4 text-sm leading-6 text-foreground">
       {content}
     </pre>
   );

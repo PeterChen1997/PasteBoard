@@ -3,6 +3,7 @@ export type Thread = {
   title: string;
   createdAt: string;
   updatedAt: string;
+  pasteCount: number;
 };
 
 export type Paste = {
@@ -21,4 +22,11 @@ export type CreateThreadInput = {
 export type CreatePasteInput = {
   threadId: string;
   content: string;
+};
+
+export type PasteMutationMode = "replace" | "append";
+
+export type UpdatePasteInput = {
+  content: string;
+  mode: PasteMutationMode;
 };

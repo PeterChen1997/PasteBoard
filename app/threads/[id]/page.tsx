@@ -1,5 +1,5 @@
-import { PasteList } from "@/components/paste-list";
 import { CreatePasteButton } from "@/components/create-paste-button";
+import { PasteList } from "@/components/paste/paste-list";
 import { ThreadHeader } from "@/components/thread/thread-header";
 
 export default async function ThreadPage({
@@ -13,7 +13,7 @@ export default async function ThreadPage({
     <div className="flex flex-col min-h-screen">
       <ThreadHeader id={id} />
       <div className="container flex-1 py-8">
-        <div className="flex justify-end mb-6">
+        <div className="mb-6 flex justify-end">
           <CreatePasteButton threadId={id} />
         </div>
         <PasteList threadId={id} />
